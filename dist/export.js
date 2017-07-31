@@ -11,14 +11,38 @@ exports.default = {
       loading: false
     };
   },
+  computed: {
+    prodUrl: function prodUrl() {
+      return this.getUrl('prodUrl');
+    },
+    stageUrl: function stageUrl() {
+      return this.getUrl('stageUrl');
+    }
+  },
   methods: {
     initWith: function initWith() {
       return {
         plugin: 'td-publisher'
       };
     },
+    getUrl: function getUrl(url) {
+      var urls = this.schema.options.filter(function (item) {
+        return item.name == url;
+      });
+
+      if (urls.length) {
+        return urls[0].value;
+      }
+
+      return '';
+    },
     deploy: function deploy(hookUrl) {
       var _this = this;
+
+      if (!hookUrl.length) {
+        alert('Please define the options prodUrl and stageUrl in your schema definition options.');
+        return;
+      }
 
       this.loading = true;
 
@@ -37,7 +61,7 @@ exports.default = {
   }
 };
 if (module.exports.__esModule) module.exports = module.exports.default
-;(typeof module.exports === "function"? module.exports.options: module.exports).template = "<div><div v-if=loading>Loading...</div><div v-else=\"\"><a class=\"uk-button uk-display-block\" v-on:click=\"deploy('https://api.netlify.com/build_hooks/597ed8470752d0099b79185c')\">Deploy to production </a><a class=\"uk-button uk-display-block uk-margin-small-top\" v-on:click=\"deploy('https://api.netlify.com/build_hooks/597edb3b424ef210e08513d2')\">Deploy to staging</a></div></div>"
+;(typeof module.exports === "function"? module.exports.options: module.exports).template = "<div><div v-if=loading>Loading...</div><div v-else=\"\"><a class=\"uk-button uk-display-block\" v-on:click=deploy(prodUrl)>Deploy to production </a><a class=\"uk-button uk-display-block uk-margin-small-top\" v-on:click=deploy(stageUrl)>Deploy to staging</a></div></div>"
 
 },{}],2:[function(require,module,exports){
 'use strict';
